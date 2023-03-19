@@ -33,27 +33,27 @@ document.addEventListener('keydown', function (e) {
 
 ///////////////////////////////////////////////
 // Button scrolling
-btnScrollTo.addEventListener('click', function(e) {
+btnScrollTo.addEventListener('click', function (e) {
   const s1coords = section1.getBoundingClientRect();
   console.log(s1coords);
   console.log(e.target.getBoundingClientRect());
   console.log('Current scroll (X/Y)', window.pageXOffset, pageYOffset);
   console.log(
-    'height/width viewport', 
-    document.documentElement.clientHeight, 
+    'height/width viewport',
+    document.documentElement.clientHeight,
     document.documentElement.clientWidth
-    );
-    // Scrolling
-    // window.scrollTo(
-    //   s1coords.left + window.pageXOffset,
-    //   s1coords.top + window.pageYOffset
-    //  );
-    // window.scrollTo({
-    //   left: s1coords.left + window.pageXOffset,
-    //   top: s1coords.top + window.pageYOffset,
-    //   behavior: 'smooth',
-    // });
-      section1.scrollIntoView({ behavior: 'smooth' });
+  );
+  // Scrolling
+  // window.scrollTo(
+  //   s1coords.left + window.pageXOffset,
+  //   s1coords.top + window.pageYOffset
+  //  );
+  // window.scrollTo({
+  //   left: s1coords.left + window.pageXOffset,
+  //   top: s1coords.top + window.pageYOffset,
+  //   behavior: 'smooth',
+  // });
+  section1.scrollIntoView({ behavior: 'smooth' });
 });
 
 //////////////////////////////////////////////////////////
@@ -61,20 +61,20 @@ btnScrollTo.addEventListener('click', function(e) {
 // document.querySelectorAll('.nav__link').forEach(function(el) {
 //   el.addEventListener('click', function(e) {
 //     e.preventDefault();
-//     const id = this.getAttribute('href'); 
+//     const id = this.getAttribute('href');
 //     console.log(id);
 //     document.querySelector(id).scrollIntoView({behavior: 'smooth'});
 //   });
 // });
 // 1. Add event listener to common parent element
 // 2. Determine what element originated the event
-document.querySelector('.nav__links').addEventListener('click', function(e) {
+document.querySelector('.nav__links').addEventListener('click', function (e) {
   e.preventDefault();
   // Matching strategy
-  if(e.target.classList.contains('nav__link')) {
-      const id = e.target.getAttribute('href'); 
-      console.log(id);
-      document.querySelector(id).scrollIntoView({behavior: 'smooth'});
+  if (e.target.classList.contains('nav__link')) {
+    const id = e.target.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
 });
 
@@ -97,14 +97,14 @@ tabsContainer.addEventListener('click', function (e) {
 
 ////////////////////////////////////////////////////////////
 // Menu fade animation
-const handleHover = function(e) {
-  if(e.target.classList.contains('nav__link')) {
+const handleHover = function (e) {
+  if (e.target.classList.contains('nav__link')) {
     const link = e.target;
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
     const logo = link.closest('.nav').querySelector('img');
 
     siblings.forEach(el => {
-      if(el !== link) el.style.opacity = this;
+      if (el !== link) el.style.opacity = this;
     });
     logo.style.opacity = this;
   }
@@ -125,6 +125,7 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 //   if(this.window.scrollY > initialCoords.top) nav.classList.add('sticky')
 //   else nav.classList.remove('sticky')
 // });
+
 ///////////////////////////////////////////////
 // Modern Sticky Navigation
 const header = document.querySelector('.header');
@@ -144,18 +145,18 @@ headerObserver.observe(header);
 
 //////////////////////////////////////////////////////////
 // Reveal sections
-const allSections = document.querySelectorAll('.section')
-const revealSection = function(entries, observer) {
+const allSections = document.querySelectorAll('.section');
+const revealSection = function (entries, observer) {
   const [entry] = entries;
-  if(!entry.isIntersecting) return;
+  if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden');
   observer.unobserve(entry.target);
 };
 const sectionObserver = new IntersectionObserver(revealSection, {
   root: null,
-  threshold: 0.15
+  threshold: 0.15,
 });
-allSections.forEach(function(section) {
+allSections.forEach(function (section) {
   sectionObserver.observe(section);
   // section.classList.add('section--hidden');
 });
@@ -164,9 +165,9 @@ allSections.forEach(function(section) {
 // Lazy Loading Images
 const imgTargets = document.querySelectorAll('img[data-src');
 
-const loading = function(entries, observer) {
+const loading = function (entries, observer) {
   const [entry] = entries;
-  if(!entry.isIntersecting) return;
+  if (!entry.isIntersecting) return;
   // Replace src with data-src
   entry.target.src = entry.target.dataset.src;
   entry.target.addEventListener('load', function () {
@@ -174,101 +175,99 @@ const loading = function(entries, observer) {
   });
   observer.unobserve(entry.target);
 };
-const imgObserver =new IntersectionObserver(loading, {
+const imgObserver = new IntersectionObserver(loading, {
   root: null,
   threshold: 0,
   // rootMargin: '+200px',
 });
 imgTargets.forEach(img => imgObserver.observe(img));
-  
+
 ////////////////////////////////////////////////////////////
 // Slider
 const Slider = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const dotContainer = document.querySelector('.dots');
 
-const slides = document.querySelectorAll('.slide');
-const btnLeft = document.querySelector('.slider__btn--left');
-const btnRight = document.querySelector('.slider__btn--right');
-const dotContainer = document.querySelector('.dots')
+  let curSlide = 0;
+  const maxSlide = slides.length;
 
-let curSlide = 0;
-const maxSlide = slides.length;
+  // Functions
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
 
-// Functions
-const createDots = function () {
-  slides.forEach(function (_, i) {
-    dotContainer.insertAdjacentHTML(
-      'beforeend',
-      `<button class="dots__dot" data-slide="${i}"></button>`
+  const activateDot = function (slide) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
     );
+  };
+
+  //Next slide
+  const nextSlide = function () {
+    if (curSlide === maxSlide - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const prevSlide = function () {
+    if (curSlide === 0) {
+      curSlide = maxSlide - 1;
+    } else {
+      curSlide--;
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const init = function () {
+    goToSlide(0);
+    createDots(0);
+    activateDot(0);
+  };
+  init();
+
+  // Event handlers
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') prevSlide();
+    e.key === 'ArrowRight' && nextSlide();
   });
-};
 
-const activateDot = function(slide) {
-  document
-    .querySelectorAll('.dots__dot')
-    .forEach(dot => dot.classList
-      .remove('dots__dot--active'));
-
-  document
-   .querySelector(`.dots__dot[data-slide="${slide}"]`)
-   .classList.add('dots__dot--active');
-};
-
-const goToSlide = function(slide) {
-  slides.forEach(
-    (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
-  );
-};
-
-//Next slide
-const nextSlide = function () {
-  if(curSlide === maxSlide - 1) {
-    curSlide = 0
-  } else {
-    curSlide++;
-  }
-  goToSlide(curSlide);
-  activateDot(curSlide);
-};
-
-const prevSlide = function () {
-  if (curSlide === 0) {
-    curSlide = maxSlide - 1;
-  } else {
-    curSlide--;
-  }
-  goToSlide(curSlide);
-  activateDot(curSlide);
-};
-
-const init = function() {
-  goToSlide(0);
-  createDots(0);
-  activateDot(0)
-}
-init()
-
-// Event handlers
-btnRight.addEventListener('click', nextSlide);
-btnLeft.addEventListener('click', prevSlide);
-
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'ArrowLeft') prevSlide();
-  e.key === 'ArrowRight' && nextSlide();
-});
-
-dotContainer.addEventListener('click', function (e) {
-  if (e.target.classList.contains('dots__dot')) {
-    const { slide } = e.target.dataset;
-    goToSlide(slide);
-    activateDot(slide);
-  }
-}); 
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      const { slide } = e.target.dataset;
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
 };
 Slider();
 
 //////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 
 /*
